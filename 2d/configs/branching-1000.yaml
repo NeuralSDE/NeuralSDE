@@ -1,0 +1,122 @@
+# "hopper-medium-v2",
+# "maze2d-umaze-v1",
+# "halfcheetah-medium-v2",
+# "walker2d-medium-v2",
+# "ant-medium-v2",
+# "maze2d-medium-v1",
+# "maze2d-large-v1",
+# "maze2d-umaze-v1"
+# "pushT",
+dataset:
+  name: branching
+  obs_horizon: 1
+  denoising: true
+  noise_std: 0.0
+  time_gap: 0.1
+  use_hermite_spline: false
+  in_latent_space: false
+
+training:
+  batch_size: 2560
+  checkpoint_interval: 20
+  seed: 42
+  log_dir_base: ./runs
+  num_epochs: 200
+  save_model: true
+  mixed_precision: false
+  val_split: 0.1
+
+  flow:
+    train_flow: false
+
+    multi_noise: false
+    noise_std: 0.1
+    train_on_clean_data: false
+
+    optimizer: adam
+    learning_rate: 2.0e-4 # 0.000035
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 10
+    factor: 0.5
+
+    loss_fn: mse # log_mse/mse
+    desingularization: None
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+
+  denoiser:
+    train_denoiser: false
+
+    multi_noise: false
+    noise_std: 0.1
+
+    optimizer: adam
+    learning_rate: 2.0e-4 
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 10
+    factor: 0.5
+
+    loss_fn: mse  #mse/weighted_mse
+    # desingularization: None
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+
+  diffusion:
+    train_diffusion: true
+    multi_noise: false
+    noise_std: 0.1
+    train_on_clean_data: true
+
+    optimizer: adam
+    learning_rate: 4.0e-5 
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 1
+    factor: 0.5
+
+    # loss_fn: None
+    # desingularization: None
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+
+    flow_path: 
+
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+    logit_min: -9.0
+    logit_max: -3.0
+
+eval:
+  denoiser_path: 
+  denoising_magnitude: 1.0
+  diffusion_magnitide: 1.0
+  diffusion_path: 
+  flow_path: 
+  num_eval_runs: 10
+  num_points: 1000
+  num_trajectories: 10
+  use_sde: true
+  visualize_trajectory: true
+
+# wandb:
+#   entity: macshen
+#   project: pushT_sde

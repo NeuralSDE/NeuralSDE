@@ -1,0 +1,107 @@
+dataset:
+  name: branching
+  obs_horizon: 1
+  denoising: true
+  noise_std: 0.0
+  time_gap: 1.0
+  use_hermite_spline: false
+  in_latent_space: false
+
+training:
+  batch_size: 256
+  checkpoint_interval: 20
+  seed: 42
+  log_dir_base: ./runs
+  num_epochs: 200
+  save_model: true
+  mixed_precision: false
+  val_split: 0.1
+
+  flow:
+    train_flow: false
+
+    multi_noise: false
+    noise_std: 0.1
+    train_on_clean_data: false
+
+    optimizer: adam
+    learning_rate: 2.0e-4 
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 10
+    factor: 0.5
+
+    loss_fn: mse # log_mse/mse
+    desingularization: None
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+
+  denoiser:
+    train_denoiser: false
+
+    multi_noise: false
+    noise_std: 0.1
+
+    optimizer: adam
+    learning_rate: 2.0e-4 
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 10
+    factor: 0.5
+
+    loss_fn: mse 
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+
+  diffusion:
+    train_diffusion: true
+    multi_noise: false
+    noise_std: 0.1
+    train_on_clean_data: true
+
+    optimizer: adam
+    learning_rate: 4.0e-5 
+    l2_reg: 0
+
+    use_learning_schedule: true
+    patience: 10
+    factor: 0.5
+
+    # loss_fn: None
+    # desingularization: None
+
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ""
+
+    flow_path: ./runs/branching/original_f/20250313-052251/flow_ep_120.pth
+    hidden_dim: 128
+    norm_type: layer
+    num_layers: 5
+    logit_min: -7.5
+    logit_max: -2.5
+
+eval:
+  denoiser_path: ./runs/branching/original_d/20250313-052605/denoiser_ep_100.pth
+  denoising_magnitude: 1.0
+  diffusion_magnitide: 1.0
+  diffusion_path: ./runs/branching/original_g/20250313-052846/diffusion_ep_140.pth
+  flow_path: ./runs/branching/original_f/20250313-052251/flow_ep_120.pth
+  num_eval_runs: 10
+  num_points: 100
+  num_trajectories: 10
+  use_sde: true
+  visualize_trajectory: true

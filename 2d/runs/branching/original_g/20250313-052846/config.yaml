@@ -1,0 +1,36 @@
+dataset:
+  denoising: true
+  in_latent_space: false
+  name: branching
+  noise_std: 0.0
+  obs_horizon: 1
+  time_gap: 1.0
+  use_hermite_spline: false
+training:
+  batch_size: 256
+  checkpoint_interval: 20
+  diffusion:
+    factor: 0.5
+    flow_path: ./runs/branching/original_f/20250313-052251/flow_ep_120.pth
+    hidden_dim: 128
+    l2_reg: 0
+    learning_rate: 4.0e-05
+    logit_max: -2.5
+    logit_min: -7.5
+    multi_noise: false
+    noise_std: 0.1
+    norm_type: layer
+    num_layers: 5
+    optimizer: adam
+    patience: 10
+    resume: false
+    resume_epoch: 0
+    resume_run_path: ''
+    train_diffusion: true
+    train_on_clean_data: true
+    use_learning_schedule: true
+  log_dir_base: ./runs
+  mixed_precision: false
+  num_epochs: 200
+  save_model: true
+  seed: 42
