@@ -1,0 +1,38 @@
+name: video
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip=23.3
+  - numpy=1.24.0
+  - matplotlib=3.9.2
+  - pillow=10.0.1
+  - ffmpeg=4.2.2
+  - pytorch=2.4.1
+  - torchvision=0.19.1
+  - cudatoolkit=12.1
+  - pyyaml=6.0.2
+  - tqdm=4.66.1
+  - pandas=2.2.2
+  - scikit-learn=1.6.0
+  - scipy=1.9.3
+  - pip:
+    - torchsde==0.2.6
+    - torchdiffeq==0.2.3
+    - einops==0.8.0
+    - wandb==0.16.0
+    - pytorch-lightning==2.1.2
+    - av==12.3.0
+    - decord==0.6.0
+    - moviepy==1.0.3
+    - opencv-python==4.10.0.84
+    - imageio==2.33.0
+    - imageio-ffmpeg==0.4.9
+    - lpips==0.1.4
+    - videojedi==1.1.0
+    - h5py==3.10.0
+    - submitit==1.5.2
+    - albumentations==1.3.1

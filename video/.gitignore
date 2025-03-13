@@ -1,0 +1,8 @@
+wandb/
+runs/
+evaluation/runs/
+**/*.json
+**/*.pt
+**/*.pth
+**/*.ckpt
+model/ae/

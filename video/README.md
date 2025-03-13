@@ -1,132 +1,125 @@
-<h1 align="center">Neural SDE: Video Generation</h1>
-<p align="center">
-  <h3 align="center">Generating Temporally Consistent Videos with Stochastic Differential Equations</h3>
-</p>
+This directory contains the implementation for the video prediction task. Our approach enables to generate high-quality predictions with few inference steps and offer "free" temporal interpolation beyond the training schedule.
 
-This directory contains the implementation for the video generation component of the Neural SDE framework. Our approach enables high-quality generation of temporally consistent videos with controllable motion dynamics.
+This repository is mostly based on [river](https://github.com/Araachie/river)
 
-## 📋 Contents
+## Setup
 
-- [Overview](#overview)
-- [Installation](#installation)
-- [Dataset Preparation](#dataset-preparation)
-- [Training](#training)
-- [Inference](#inference)
-- [Model Architecture](#model-architecture)
-- [Results](#results)
+Create a conda environment and install dependencies:
+```bash
+cd video
+conda env create -f environment.yml
+conda activate video
+```
+## Training your own models
 
-## 🔍 Overview
+To train your own video prediction models you need to start by preparing data. 
 
-The video generation component uses stochastic differential equations to model and generate temporally consistent videos. This approach allows for:
+### Datasets
 
-- Precise control over temporal dynamics
-- Realistic modeling of motion and scene changes
-- Efficient sampling of diverse video sequences
-- Conditioning on initial frames or text prompts
+The training code expects the dataset to be packed into .hdf5 files in a custom manner. 
+To create such files, use the provided `dataset/convert_to_h5.py` script. 
+Usage example:
 
-## 🛠️ Installation
+```angular2html
+python dataset/convert_to_h5.py --out_dir <directory_to_store_the_dataset> --data_dir <path_to_video_frames> --image_size 128 --extension png
+```
 
-### Environment Setup
+The output of `python dataset/convert_to_h5.py --help` is as follows:
+
+```angular2html
+usage: convert_to_h5.py [-h] [--out_dir OUT_DIR] [--data_dir DATA_DIR] [--image_size IMAGE_SIZE] [--extension EXTENSION]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --out_dir OUT_DIR     Directory to save .hdf5 files
+  --data_dir DATA_DIR   Directory with videos
+  --image_size IMAGE_SIZE
+                        Resolution to resize the images to
+  --extension EXTENSION
+                        Video frames extension
+
+```
+
+The video frames at `--data_dir` should be organized in the following way:
+
+```angular2html
+data_dir/
+|---train/
+|   |---00000/
+|   |   |---00000.png
+|   |   |---00001.png
+|   |   |---00002.png
+|   |   |---...
+|   |---00001/
+|   |   |---00000.png
+|   |   |---00001.png
+|   |   |---00002.png
+|   |   |---...
+|   |---...
+|---val/
+|   |---...
+|---test/
+|   |---...
+```
+
+To extract individual frames from a set of video files, we recommend using the `convert_video_directory.py` script from the [official PVG repository](https://github.com/willi-menapace/PlayableVideoGeneration#custom-datasets).
+
+
+**KTH:** Download the videos from the [dataset's official website](https://www.csc.kth.se/cvap/actions/).
+
+**CLEVRER:** Download the videos from the [official dataset's website](http://clevrer.csail.mit.edu/).
+
+### Training autoencoder
+
+We recommend to use the official [taming transformers repository](https://github.com/CompVis/taming-transformers) for 
+training VQGAN. To use the trained VQGAN at the second stage, update the `model->autoencoder` field in the config accordingly. 
+To do this, set `type` to `ldm-vq`, `config` to `f8_small`, `f8` or `f16` depending on the VQGAN config that was used at training.
+We recommend using low-dimensional latents, e.g. from 4 to 8, and down-sampling images at least to 16 x 16 resolution. 
+
+Besides, we also provide our own autoencoder architecture at `model/vqgan/vqvae.py` that one may use to train simpler VQVAEs.
+For instance, our pretrained model on the CLEVRER dataset uses this custom implementation.
+
+### Training main model
+
+To launch the training of the main model, use the `train.py` script from this repository.
+Usage example:
+```angular2html
+python train.py --config <path_to_config> --run-name <run_name> --wandb
+```
+The default config file name is in format: <dataset_name>_<component_name>-<noise_level>-<loss_function>.
+The default run name is in format:
+<component_name>-<noise_level>-<loss_function>.
 
 ```bash
-# Create a conda environment
-conda create -n neuralsde_video python=3.8
-conda activate neuralsde_video
+python train.py --config ./configs/clevrer_f-01-null.yaml --run-name f-01-null --wandb
+python train.py --config ./configs/clevrer_d-01.yaml --run-name d-01 --wandb
+python train.py --config ./configs/clevrer_g-01-null.yaml --run-name g-01-null --wandb
+```
+Please don't forget to set the corresponding flow and denoiser components before training diffusion.
 
-# Install dependencies
-pip install -r requirements.txt
+The output of `python train.py --help` is as follows:
+
+```angular2html
+usage: train.py [-h] --run-name RUN_NAME --config CONFIG [--num-gpus NUM_GPUS] [--resume-step RESUME_STEP] [--vqvae-path VQVAE_PATH] [--random-seed RANDOM_SEED] [--wandb]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --run-name RUN_NAME   Name of the current run.
+  --config CONFIG       Path to the config file.
+  --num-gpus NUM_GPUS   Number of gpus to use for training. By default uses all available gpus.
+  --resume-step RESUME_STEP
+                        Step to resume the training from.
+  --random-seed RANDOM_SEED
+                        Random seed.
+  --wandb               If defined, use wandb for logging.
 ```
 
-### Requirements
+Use the configs provided in this repository as examples. 
 
-Create a `requirements.txt` file in this directory with the following dependencies:
 
-```
-torch>=1.9.0
-torchvision>=0.10.0
-numpy>=1.20.0
-opencv-python>=4.5.0
-ffmpeg-python>=0.2.0
-einops>=0.4.0
-tqdm>=4.61.0
-tensorboard>=2.5.0
-pyyaml>=5.4.0
-```
-
-## 📊 Dataset Preparation
-
-Our model is trained on standard video datasets. To prepare the data:
+## Evaluation
+Once you have trained flow, denoiser and diffusion components, run the following command to generate videos. You may need to change the model path based on your config file name and run name.
 
 ```bash
-# Download and prepare datasets
-python prepare_data.py --dataset [kinetics|ucf101|custom] --output_dir data/
+python evaluation/generate_videos.py
 ```
-
-The datasets will be processed and stored in the `data/` directory.
-
-## 🚀 Training
-
-To train the model with default parameters:
-
-```bash
-python train.py --config configs/default.yaml
-```
-
-You can customize the training by modifying the configuration files in the `configs/` directory.
-
-### Configuration Options
-
-Key configuration options include:
-- `model_type`: Type of SDE model to use
-- `sde_type`: Type of stochastic differential equation
-- `frame_size`: Resolution of video frames
-- `sequence_length`: Number of frames in training sequences
-- `learning_rate`: Learning rate for optimization
-- `batch_size`: Batch size for training
-- `num_epochs`: Number of training epochs
-
-## 🔮 Inference
-
-To generate videos using a trained model:
-
-```bash
-python generate.py --model_path checkpoints/your_model_checkpoint.pt --output_dir results/ --num_samples 5
-```
-
-### Conditional Generation
-
-For conditional generation based on initial frames:
-
-```bash
-python generate.py --model_path checkpoints/your_model_checkpoint.pt --initial_frames path/to/initial_frames/ --output_dir results/
-```
-
-## 🧠 Model Architecture
-
-Our video generation model architecture consists of:
-
-1. **Neural SDE Backbone**: Parameterizes the drift and diffusion terms of the SDE
-2. **Temporal Encoder**: Processes temporal information from input frames
-3. **Frame Decoder**: Transforms SDE outputs to pixel space
-4. **Consistency Module**: Ensures temporal consistency between frames
-
-For more details, see the implementation in the source code.
-
-## 📈 Results
-
-Our approach achieves state-of-the-art results on multiple video generation benchmarks. Example visualizations:
-
-![video_results](path/to/video_results.gif)
-
-## 📝 Citation
-
-If you use this code in your research, please cite our paper:
-
-```bibtex
-@article{author2024neuralsde,
-  title={Neural SDE: Stochastic Differential Equations for Generative Modeling},
-  author={Author, A. and Author, B. and Author, C.},
-  journal={arXiv preprint arXiv:2024.xxxxx},
-  year={2024}
-}
-``` 
