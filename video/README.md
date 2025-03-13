@@ -95,7 +95,7 @@ python train.py --config ./configs/clevrer_f-01-null.yaml --run-name f-01-null -
 python train.py --config ./configs/clevrer_d-01.yaml --run-name d-01 --wandb
 python train.py --config ./configs/clevrer_g-01-null.yaml --run-name g-01-null --wandb
 ```
-Please don't forget to set the corresponding flow and denoiser components before training diffusion.
+Please don't forget to set the `f_ckpt_path` and `d_ckpt_path` in [/configs/clevrer_g-01-null.yaml](/configs/clevrer_g-01-null.yaml) before training diffusion.
 
 The output of `python train.py --help` is as follows:
 
