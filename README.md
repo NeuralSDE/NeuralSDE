@@ -1,6 +1,6 @@
-<h1 align="center">Neural SDE: Stochastic Differential Equations for Generative Modeling</h1>
+<h1 align="center">Neural SDEs as a Unified Approach to Continuous-Domain Sequence Modeling</h1>
 <p align="center">
-  <h3 align="center">A Framework for Trajectory, Video, and Robot Action Generation</h3>
+  <h3 align="center">Under Double Blind Review</h3>
 </p>
 
 This is the official repository for the paper [Neural SDEs as a Unified Approach to Continuous-Domain Sequence Modeling](https://arxiv.org/pdf/2501.18871). We introduce a novel approach to continuous sequence modeling that interprets timeseries data as discrete samples from an underlying continuous dynamical system. Our method models time evolution using Neural Stochastic Differential Equations (Neural SDEs), where both drift and diffusion terms are parameterized by neural networks. We provide a principled maximum likelihood objective and a simulation-free scheme for efficient training. Through extensive experiments across both embodied and generative AI tasks, we demonstrate that our SDE-based continuous-time modeling excels in complex, high-dimensional, and temporally intricate domains. This repository contains the following domains:
@@ -9,7 +9,7 @@ This is the official repository for the paper [Neural SDEs as a Unified Approach
 - **Video Prediction**: video prediction on standard benchmark datasets
 - **PushT**: a imitation learning task.
 
-![project_teaser](/assets/overview_figure.png)
+![project_teaser](/assets/overview_figure.jpg)
 
 ## 🔥 News
 - **2025-03**: Initial release of Neural SDEs for continous sequence modeling!
