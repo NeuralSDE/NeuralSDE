@@ -5,18 +5,18 @@
 
 This is the official repository for the paper [Neural SDEs as a Unified Approach to Continuous-Domain Sequence Modeling](https://arxiv.org/pdf/2501.18871). We introduce a novel approach to continuous sequence modeling that interprets timeseries data as discrete samples from an underlying continuous dynamical system. Our method models time evolution using Neural Stochastic Differential Equations (Neural SDEs), where both drift and diffusion terms are parameterized by neural networks. We provide a principled maximum likelihood objective and a simulation-free scheme for efficient training. Through extensive experiments across both embodied and generative AI tasks, we demonstrate that our SDE-based continuous-time modeling excels in complex, high-dimensional, and temporally intricate domains. This repository contains the following domains:
 
-- **2D Branching Trajectories**: Generate complex 2D trajectories with precise control over dynamics
-- **Video Prediction**: Create temporally consistent videos with controllable motion
-- **Imitation Learning (PushT)**: Synthesize physically plausible robot action sequences
+- **2D Branching Trajectories**: a 2D Bifurcation task designed to assess multi-modaltrajectory generation
+- **Video Prediction**: video prediction on standard benchmark datasets
+- **PushT**: a imitation learning task.
 
-![project_teaser](path/to/teaser.png)
+![project_teaser](/assets/overview_figure.png)
 
 ## 🔥 News
-- **2025-03**: Initial release of Neural SDE framework
+- **2025-03**: Initial release of Neural SDEs for continous sequence modeling!
 
 ## 📋 Todo 
-code for pushT
-code for video prediction
+- code for pushT
+- code for video prediction
 
 ## 🔍 Project Structure
 
