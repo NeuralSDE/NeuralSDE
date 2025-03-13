@@ -1,4 +1,4 @@
-This directory contains the implementation for the the 2D Bifurcation task. Our approach is able to capture multi-modal distributions (2 branches).
+This directory contains the implementation for the 2D Bifurcation task. Our approach is able to capture multi-modal distributions (2 branches).
 
 
 ## Setup

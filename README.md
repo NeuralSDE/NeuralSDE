@@ -16,7 +16,7 @@ This is the official repository for the paper [Neural SDEs as a Unified Approach
 
 ## 📋 Todo 
 - code for pushT
-- code for video prediction
+- pretrained model for video prediction
 
 ## 🔍 Project Structure
 
@@ -40,7 +40,7 @@ cd NeuralSDE
 If you find our work useful for your research, please consider citing our paper:
 
 ```bibtex
-@article{author2024neuralsde,
+@article{author2025neuralsde,
   title={Neural SDEs as a Unified Approach to Continuous-Domain Sequence Modeling},
   author={Author, A. and Author, B. and Author, C.},
   journal={arXiv preprint arXiv:2025.xxxxx},
@@ -48,10 +48,11 @@ If you find our work useful for your research, please consider citing our paper:
 }
 ```
 
-## 📄 License
-
-This project is licensed under the [LICENSE](LICENSE) file included in the repository.
-
 ## 🙏 Acknowledgements
 
-We thank [list of people or organizations] for their valuable contributions and support.
+This project builds upon and incorporates code from several open-source repositories. We would like to express our sincere gratitude to:
+
+- [river](https://github.com/Araachie/river)
+- [diffusion policy](https://github.com/real-stanford/diffusion_policy)
+
+We also thank all colleagues and reviewers who provided valuable feedback during the development of this work.
